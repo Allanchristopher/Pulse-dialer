@@ -1,47 +1,56 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Text,
   View,
   TouchableOpacity,
   TextInput,
   StyleSheet,
+  Alert,
 } from "react-native";
 
-export default function Login() {
-  const [mobileNumber, setMobileNumber] = useState(""); // State to hold the mobile number
-  const [otp, setOtp] = useState(""); // State to hold the OTP value
+export default function Login({ onLoginSuccess }) {
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [otp, setOtp] = useState("");
 
   const handleMobileNumberChange = (text) => {
-    setMobileNumber(text); // Update the mobile number when the user types
+    setMobileNumber(text);
   };
 
   const handleOtpChange = (text) => {
-    setOtp(text); // Update the OTP value when the user types
+    setOtp(text);
   };
 
-  const handleButtonPress = () => {
-    // Handle button press (e.g., verify OTP)
-    alert(`Entered Mobile Number: ${mobileNumber}\nEntered OTP: ${otp}`);
+  const handleButtonPress = async () => {
+    const response = await axios.get(
+      `http://chatdesk.pulsework360.com:8080/api/123gudehouse/testingOne?PhoneNumber=${mobileNumber}&Otp=${otp}`
+    );
+    console.log(response.data);
+    if (response.data.code === "Login" && response.data.status === "Success") {
+      onLoginSuccess();
+    } else {
+      Alert.alert("Error", "Login failed. Please try again.");
+    }
   };
 
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Enter mobile number"
+        placeholder="Mobile number"
         keyboardType="numeric"
         value={mobileNumber}
         onChangeText={handleMobileNumberChange}
       />
       <TextInput
         style={styles.input}
-        placeholder="Enter OTP"
+        placeholder="OTP"
         keyboardType="numeric"
         value={otp}
         onChangeText={handleOtpChange}
       />
       <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
-        <Text style={styles.buttonText}>Verify OTP</Text>
+        <Text style={styles.buttonText}>Verify</Text>
       </TouchableOpacity>
     </View>
   );

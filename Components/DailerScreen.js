@@ -10,6 +10,7 @@ import {
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
+import Toast from 'react-native-toast-message';
 
 export default function DialerScreen() {
   const route = useRoute();
@@ -25,21 +26,52 @@ export default function DialerScreen() {
   const handleNumber = (pressedNumber) => {
     setNumber((prevNumber) => prevNumber + pressedNumber);
   };
-
-  const handleCall = () => {
+  const handleCall = async () => {
     if (number.length > 0) {
-      axios
-        .post("http://10.0.0.219:4001/insertnumber", { number: number })
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          Alert.alert(
-            "Error",
-            "Failed to make the call. Please try again later."
-          );
-        });
+      try {
+        const response = await axios.post(
+          "http://chatdesk.pulsework360.com:8080/api/6b031ef635e55d072053442635498a2c/c2c/API",
+          {
+            token: "6b031ef635e55d072053442635498a2c",
+            agentNum: "7010635230",
+            custNum: number,
+            Type: "m2m",
+          }
+        );
+        console.log(response.data);
+        if (
+          response.data.Code == "SUCCESS" &&
+          response.data.Status == "SUCCESS"
+        ) {
+          Toast.show({
+            type: 'success',
+            text1: 'Call Originated',
+            text2: 'Please wait for your call',
+            visibilityTime: 3000, // 3 seconds
+            autoHide: true,
+          });
+          
+          setNumber("");
+        }else {
+          Toast.show({
+            type: 'error',
+            text1: response.data.Code,
+            text2: 'Please try again',
+            visibilityTime: 3000, // 3 seconds
+            autoHide: true,
+          });
+        }
+
+
+
+
+      } catch (error) {
+        console.error("Error:", error);
+        Alert.alert(
+          "Error",
+          "Failed to make the call. Please try again later."
+        );
+      }
     } else {
       Alert.alert("Error", "Please enter a valid phone number");
     }
@@ -117,7 +149,7 @@ export default function DialerScreen() {
         ))}
       </View>
       <View style={styles.dailercontainer}>
-        {["*", "0", "+"].map((symbol) => (
+        {["*", "0", "#"].map((symbol) => (
           <TouchableOpacity
             key={symbol}
             onPress={() => handleNumber(symbol)}
@@ -131,6 +163,8 @@ export default function DialerScreen() {
       <TouchableOpacity onPress={handleCall} style={styles.callbtn}>
         <Ionicons name="call" size={24} color="white" />
       </TouchableOpacity>
+      {/* Toast component placed here */}
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </View>
   );
 }
