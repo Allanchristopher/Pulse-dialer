@@ -12,7 +12,7 @@ const LogoutScreen = ({ handleLogoutSuccess }) => {
     handleLogoutSuccess();
   }, []);
 
-  return null; 
+  return null;
 };
 
 export default function Totalpage({ handleLogoutSuccess }) {

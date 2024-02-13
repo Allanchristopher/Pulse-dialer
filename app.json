@@ -22,10 +22,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.allanchristopher2516.dialerexpo"
+      "package": "com.allanchristopher2516.dialerexpo",
+      "permissions": ["INTERNET"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "network": {
+      "access": ["*"]
     },
     "extra": {
       "eas": {

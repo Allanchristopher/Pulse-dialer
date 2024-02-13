@@ -66,8 +66,13 @@ export default function ContactsScreen() {
   }));
 
   const handleContactClick = (contactNumber) => {
-    setSelectedContactNumber(contactNumber);
-    navigation.navigate("Pulse Dialer", { contactNumber });
+    const sanitizedNumber = contactNumber
+      .replace(/\s+/g, "")
+      .replace(/-/g, "")
+      .replace("+91", "")
+      .slice(-10);
+    setSelectedContactNumber(sanitizedNumber);
+    navigation.navigate("Pulse Dialer", { contactNumber: sanitizedNumber });
   };
 
   return (

@@ -25,7 +25,6 @@ export default function Login({ onLoginSuccess }) {
     const response = await axios.get(
       `http://chatdesk.pulsework360.com:8080/api/123gudehouse/testingOne?PhoneNumber=${mobileNumber}&Otp=${otp}`
     );
-    console.log(response.data);
     if (response.data.code === "Login" && response.data.status === "Success") {
       onLoginSuccess();
     } else {

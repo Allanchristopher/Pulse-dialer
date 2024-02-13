@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, forwardRef } from "react";
 import {
   Text,
   View,
@@ -10,7 +10,12 @@ import {
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
+
+// Wrap the Toast component with forwardRef
+const ForwardedToast = forwardRef((props, ref) => {
+  return <Toast {...props} ref={ref} />;
+});
 
 export default function DialerScreen() {
   const route = useRoute();
@@ -38,33 +43,28 @@ export default function DialerScreen() {
             Type: "m2m",
           }
         );
-        console.log(response.data);
         if (
           response.data.Code == "SUCCESS" &&
           response.data.Status == "SUCCESS"
         ) {
           Toast.show({
-            type: 'success',
-            text1: 'Call Originated',
-            text2: 'Please wait for your call',
-            visibilityTime: 3000, // 3 seconds
+            type: "success",
+            text1: "Call Originated",
+            text2: "Please wait for your call",
+            visibilityTime: 3000,
             autoHide: true,
           });
-          
+
           setNumber("");
-        }else {
+        } else {
           Toast.show({
-            type: 'error',
+            type: "error",
             text1: response.data.Code,
-            text2: 'Please try again',
-            visibilityTime: 3000, // 3 seconds
+            text2: "Please try again",
+            visibilityTime: 3000,
             autoHide: true,
           });
         }
-
-
-
-
       } catch (error) {
         console.error("Error:", error);
         Alert.alert(
@@ -163,8 +163,8 @@ export default function DialerScreen() {
       <TouchableOpacity onPress={handleCall} style={styles.callbtn}>
         <Ionicons name="call" size={24} color="white" />
       </TouchableOpacity>
-      {/* Toast component placed here */}
-      <Toast ref={(ref) => Toast.setRef(ref)} />
+      {/* Use ForwardedToast instead of Toast */}
+      <ForwardedToast />
     </View>
   );
 }
